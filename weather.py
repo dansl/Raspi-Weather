@@ -390,7 +390,7 @@ while running:
 				show_page = 0
 
 
-	if(seconds % 3600) == 0: #every Hour
+	if(seconds % 10800) == 0: #every 3 Hours
 		Weather_JSON = UpdateWeatherJSON()
 		
 	#Draw Calls
