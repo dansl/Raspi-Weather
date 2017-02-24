@@ -22,6 +22,8 @@ MEDIUM_FONT = 20
 SMALL_FONT = 15
 
 HOTSPOT_FILLING = (255,255,255,0)
+HOTSPOT_FILLING_HIGHLIGHT = (255,255,255,100)
+highlight_btn = None
 
 Weather_JSON = {}
 
@@ -295,7 +297,7 @@ def DrawDaysWeather(cur_day):
 		iconName = ""
 
 		if cur_day == 1:
-			day = JSON_root['txt_forecast']['forecastday'][0]['title']
+			day = "Today"
 			forcast_day = JSON_root['txt_forecast']['forecastday'][0]['fcttext']
 			forcast_night = JSON_root['txt_forecast']['forecastday'][1]['fcttext']
 			conditions = JSON_root['simpleforecast']['forecastday'][0]['conditions']
@@ -344,6 +346,11 @@ def DrawDaysWeather(cur_day):
 		
 		#######
 
+def DrawBtnHighlight():
+	if highlight_btn != None:
+		button_highlight = pygame.Surface((highlight_btn.width,highlight_btn.height), pygame.SRCALPHA)
+		button_highlight.fill(HOTSPOT_FILLING_HIGHLIGHT)
+		MAIN_LCD.blit(button_highlight, (highlight_btn.left,highlight_btn.top))
 
 def ShowLoadingScreen():
     #Fill the screen with black
@@ -376,6 +383,7 @@ while running:
 		if event.key == pygame.K_ESCAPE:
 			running = 0
 	elif event.type == pygame.MOUSEBUTTONUP and event.button == 1: #Click Buttons
+		highlight_btn = None
 		if show_page == 0:
 			if Day1Button != None and Day1Button.collidepoint(event.pos):
 				show_page = 1
@@ -388,7 +396,16 @@ while running:
 		else:
 			if DayButton != None and DayButton.collidepoint(event.pos):
 				show_page = 0
-
+	elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #Click Buttons
+		if show_page == 0:
+			if Day1Button != None and Day1Button.collidepoint(event.pos):
+				highlight_btn = Day1Button
+			elif Day1Button != None and Day2Button.collidepoint(event.pos):
+				highlight_btn = Day2Button
+			elif Day1Button != None and Day3Button.collidepoint(event.pos):
+				highlight_btn = Day3Button
+			elif Day1Button != None and Day4Button.collidepoint(event.pos):
+				highlight_btn = Day4Button
 
 	if(seconds % 10800) == 0: #every 3 Hours
 		Weather_JSON = UpdateWeatherJSON()
@@ -401,5 +418,6 @@ while running:
 	else:
 		Draw4DayForcast()
 
+	DrawBtnHighlight()
 
 	pygame.display.update()
