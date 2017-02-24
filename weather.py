@@ -349,9 +349,9 @@ def ShowLoadingScreen():
     #Fill the screen with black
     MAIN_LCD.fill(BLACK)
     #Hide mouse Pointer
-    #pygame.mouse.set_visible(False)
+    pygame.mouse.set_visible(False)
     #Show loading Text
-    DrawText(MAIN_LCD, "Loading... Please Wait", WHITE, [10, None, None, 10], MEDIUM_FONT)
+    DrawText(MAIN_LCD, "Loading... Please Wait", WHITE, [10, None, None, 10], LARGE_FONT)
     pygame.display.update()
 
 #First thing, show a loading screen
