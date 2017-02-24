@@ -159,19 +159,19 @@ def UpdateWeatherJSON():
 	weather_link = 'https://api.wunderground.com/api/'+wunder_key+'/forecast/q/KS/Mission.json'
 
 	parsed_json = {}
-	# Use Web
-	# try:
-	# 	f = urllib2.urlopen(weather_link)
-	# 	json_string = f.read()
-	# 	parsed_json = json.loads(json_string)
-	# 	f.close()
-	# except Exception as excpt:
-	# 	print("oops somthin broke")
+	####### Use Web
+	try:
+		f = urllib2.urlopen(weather_link)
+		json_string = f.read()
+		parsed_json = json.loads(json_string)
+		f.close()
+	except Exception as excpt:
+		print("oops somthin broke...")
 	#######
 
-	# Use Local file
-	with open(os.path.dirname(os.path.abspath(__file__))+'/test.json') as data_file:
-		parsed_json = json.loads(data_file.read())
+	####### Use Local file
+	# with open(os.path.dirname(os.path.abspath(__file__))+'/test.json') as data_file:
+	# 	parsed_json = json.loads(data_file.read())
 	#######
 
 	return parsed_json
@@ -179,7 +179,7 @@ def UpdateWeatherJSON():
 def DrawTime():
 	cur_date = datetime.now()
 	format_time = cur_date.strftime("%I:%M%p")
-	format_date = cur_date.strftime("%a %b %m")
+	format_date = cur_date.strftime("%a %b %d")
 	DrawText(MAIN_LCD, format_time, WHITE, [5, None, None, 5], XXLARGE_FONT)
 	DrawText(MAIN_LCD, format_date, WHITE, [5, 5, None, None], XXLARGE_FONT)
 
@@ -205,7 +205,7 @@ def Draw4DayForcast():
 		DrawImage(MAIN_LCD, weatherIcon, [50, None, None, 10], (40,40))
 
 		DrawText(MAIN_LCD, "Today  "+high+"* / "+low+"*", WHITE, [50, None, None, 60], XLARGE_FONT)
-		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [70, None, None, 60], XLARGE_FONT)
+		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [70, None, None, 60], LARGE_FONT)
 		#DrawText(MAIN_LCD, "Day: "+forcast_day, WHITE, [25, None, None, 50], MEDIUM_FONT)
 		#DrawText(MAIN_LCD, "Night: "+forcast_night, WHITE, [38, None, None, 50], MEDIUM_FONT)
 
@@ -227,7 +227,7 @@ def Draw4DayForcast():
 		DrawImage(MAIN_LCD, weatherIcon, [95, None, None, 10], (40,40))
 
 		DrawText(MAIN_LCD, day+"  "+high+"* / "+low+"*", WHITE, [95, None, None, 60], XLARGE_FONT)
-		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [115, None, None, 60], XLARGE_FONT)
+		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [115, None, None, 60], LARGE_FONT)
 		#DrawText(MAIN_LCD, "Day: "+forcast_day, WHITE, [80, None, None, 50], MEDIUM_FONT)
 		#DrawText(MAIN_LCD, "Night: "+forcast_night, WHITE, [93, None, None, 50], MEDIUM_FONT)
 
@@ -249,7 +249,7 @@ def Draw4DayForcast():
 		DrawImage(MAIN_LCD, weatherIcon, [140, None, None, 10], (40,40))
 
 		DrawText(MAIN_LCD, day + "  "+high+"* / "+low+"*", WHITE, [140, None, None, 60], XLARGE_FONT)
-		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [160, None, None, 60], XLARGE_FONT)
+		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [160, None, None, 60], LARGE_FONT)
 		#DrawText(MAIN_LCD, "Day: "+forcast_day, WHITE, [135, None, None, 50], MEDIUM_FONT)
 		#DrawText(MAIN_LCD, "Night: "+forcast_night, WHITE, [148, None, None, 50], MEDIUM_FONT)
 
@@ -270,7 +270,7 @@ def Draw4DayForcast():
 		DrawImage(MAIN_LCD, weatherIcon, [185, None, None, 10], (40,40))
 
 		DrawText(MAIN_LCD, day + "  "+high+"* / "+low+"*", WHITE, [185, None, None, 60], XLARGE_FONT)
-		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [205, None, None, 60], XLARGE_FONT)
+		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [205, None, None, 60], LARGE_FONT)
 		#DrawText(MAIN_LCD, "Day: "+forcast_day, WHITE, [190, None, None, 50], MEDIUM_FONT)
 		#DrawText(MAIN_LCD, "Night: "+forcast_night, WHITE, [203, None, None, 50], MEDIUM_FONT)
 
