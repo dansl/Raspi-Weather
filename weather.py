@@ -280,7 +280,7 @@ def Draw4DayForcast():
 		button.fill(HOTSPOT_FILLING)
 		Day4Button = MAIN_LCD.blit(button, (0,185))
 	else:
-		DrawText(MAIN_LCD, "Error Loading Weather...", WHITE, [50, None, None, 5], XLARGE_FONT)
+		DrawText(MAIN_LCD, "Loading Weather...", WHITE, [50, None, None, 5], XLARGE_FONT)
 
 def DrawDaysWeather(cur_day):
 	global DayButton
@@ -366,6 +366,7 @@ ShowLoadingScreen()
 
 #starter tick
 start_ticks=pygame.time.get_ticks()
+counter = 0;
 
 #Show which page... 0 = 4 Day weather, 1 = day 1, 2 = day 2... etc
 show_page = 0
@@ -374,7 +375,7 @@ show_page = 0
 running = 1
 while running:
 	#calculate how many seconds
-	seconds = (pygame.time.get_ticks()-start_ticks) * 0.001
+	seconds = (pygame.time.get_ticks()-start_ticks) / 1000
 
 	event = pygame.event.poll()
 	if event.type == pygame.QUIT:
@@ -407,8 +408,14 @@ while running:
 			elif Day1Button != None and Day4Button.collidepoint(event.pos):
 				highlight_btn = Day4Button
 
-	if(seconds % 10800) == 0: #every 3 Hours
-		Weather_JSON = UpdateWeatherJSON()
+	if counter != seconds:
+		print(counter)
+
+		if(counter % 10800) == 0: #every 3 Hours
+			print("UPDATE WEATHER")
+			Weather_JSON = UpdateWeatherJSON()
+
+		counter = seconds
 		
 	#Draw Calls
 	DrawBackground()
