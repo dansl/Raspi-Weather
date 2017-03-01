@@ -33,6 +33,8 @@ os.environ["SDL_MOUSEDEV"] = "/dev/input/touchscreen"
 os.environ["SDL_MOUSEDRV"] = "TSLIB"
 #######
 
+last_update = ""
+
 #Init PyGame
 pygame.init()
 pygame.mixer.init()
@@ -157,6 +159,8 @@ def DrawBackground():
 	MAIN_LCD.blit(bgBlackout, (0,0))
 
 def UpdateWeatherJSON():
+	global last_update
+
 	wunder_key = "aecd1d9781943a6e"
 	weather_link = 'https://api.wunderground.com/api/'+wunder_key+'/forecast/q/KS/Mission.json'
 
@@ -175,15 +179,25 @@ def UpdateWeatherJSON():
 	# with open(os.path.dirname(os.path.abspath(__file__))+'/test.json') as data_file:
 	# 	parsed_json = json.loads(data_file.read())
 	#######
+	cur_date = datetime.now()
+	last_update = cur_date.strftime("%-m/%-d/%y %-H:%M%p")
 
 	return parsed_json
 
 def DrawTime():
+	global HeaderButton
+	button = pygame.Surface((MAIN_LCD_width,40), pygame.SRCALPHA)
+	button.fill(HOTSPOT_FILLING)
+	HeaderButton = MAIN_LCD.blit(button, (0,0))
+
 	cur_date = datetime.now()
 	format_time = cur_date.strftime("%I:%M%p")
 	format_date = cur_date.strftime("%a %b %d")
 	DrawText(MAIN_LCD, format_time, WHITE, [5, None, None, 5], XXLARGE_FONT)
 	DrawText(MAIN_LCD, format_date, WHITE, [5, 5, None, None], XXLARGE_FONT)
+
+	if last_update != None:
+		DrawText(MAIN_LCD, "last update: "+last_update, LIGHT_GRAY, [None, 5, 5, None], SMALL_FONT)
 
 def Draw4DayForcast():
 	global Day1Button
@@ -192,10 +206,14 @@ def Draw4DayForcast():
 	global Day4Button
 
 	if Weather_JSON != None and len(Weather_JSON) > 0:
+		cur_date = datetime.now()
+		Day_of_week = cur_date.strftime("%A")
+
 		JSON_root = Weather_JSON['forecast']
 		
 		#######
-		#day = JSON_root['txt_forecast']['forecastday'][0]['title']
+		day = JSON_root['txt_forecast']['forecastday'][0]['title']
+		day = "Today" if day == Day_of_week else day
 		#forcast_day = JSON_root['txt_forecast']['forecastday'][0]['fcttext']
 		#forcast_night = JSON_root['txt_forecast']['forecastday'][1]['fcttext']
 		conditions = JSON_root['simpleforecast']['forecastday'][0]['conditions']
@@ -206,7 +224,7 @@ def Draw4DayForcast():
 		weatherIcon = pygame.image.load(os.path.dirname(os.path.abspath(__file__))+icon_root+iconName+".png").convert_alpha()
 		DrawImage(MAIN_LCD, weatherIcon, [50, None, None, 10], (40,40))
 
-		DrawText(MAIN_LCD, "Today  "+high+"* / "+low+"*", WHITE, [50, None, None, 60], XLARGE_FONT)
+		DrawText(MAIN_LCD, day+"  "+high+"* / "+low+"*", WHITE, [50, None, None, 60], XLARGE_FONT)
 		DrawText(MAIN_LCD, conditions, LIGHT_GRAY, [70, None, None, 60], LARGE_FONT)
 		#DrawText(MAIN_LCD, "Day: "+forcast_day, WHITE, [25, None, None, 50], MEDIUM_FONT)
 		#DrawText(MAIN_LCD, "Night: "+forcast_night, WHITE, [38, None, None, 50], MEDIUM_FONT)
@@ -218,6 +236,7 @@ def Draw4DayForcast():
 		#######
 
 		day = JSON_root['txt_forecast']['forecastday'][2]['title']
+		day = "Today" if day == Day_of_week else day
 		#forcast_day = JSON_root['txt_forecast']['forecastday'][2]['fcttext']
 		#forcast_night = JSON_root['txt_forecast']['forecastday'][3]['fcttext']
 		conditions = JSON_root['simpleforecast']['forecastday'][1]['conditions']
@@ -240,6 +259,7 @@ def Draw4DayForcast():
 		#######
 
 		day = JSON_root['txt_forecast']['forecastday'][4]['title']
+		day = "Today" if day == Day_of_week else day
 		#forcast_day = JSON_root['txt_forecast']['forecastday'][4]['fcttext']
 		#forcast_night = JSON_root['txt_forecast']['forecastday'][5]['fcttext']
 		conditions = JSON_root['simpleforecast']['forecastday'][2]['conditions']
@@ -261,6 +281,7 @@ def Draw4DayForcast():
 		#######
 
 		day = JSON_root['txt_forecast']['forecastday'][6]['title']
+		day = "Today" if day == Day_of_week else day
 		#forcast_day = JSON_root['txt_forecast']['forecastday'][6]['fcttext']
 		#forcast_night = JSON_root['txt_forecast']['forecastday'][7]['fcttext']
 		conditions = JSON_root['simpleforecast']['forecastday'][3]['conditions']
@@ -394,6 +415,8 @@ while running:
 				show_page = 3
 			elif Day4Button != None and Day4Button.collidepoint(event.pos):
 				show_page = 4
+			elif HeaderButton != None and HeaderButton.collidepoint(event.pos):
+				UpdateWeatherJSON()
 		else:
 			if DayButton != None and DayButton.collidepoint(event.pos):
 				show_page = 0
@@ -409,10 +432,10 @@ while running:
 				highlight_btn = Day4Button
 
 	if counter != seconds:
-		print(counter)
+		#print(counter)
 
 		if(counter % 10800) == 0: #every 3 Hours
-			print("UPDATE WEATHER")
+			#print("UPDATE WEATHER")
 			Weather_JSON = UpdateWeatherJSON()
 
 		counter = seconds
